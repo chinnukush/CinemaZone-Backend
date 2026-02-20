@@ -1,3 +1,7 @@
+# All Codes Added BY t.me/HariKushal a Developer.
+# Don't Remove Credentials ❌ It's My Persnol Code Were I Learnt And Execute To Run Such BullShit 😂
+# ಕನ್ನಡ ಕಲಿಯಿರಿ ಕನ್ನಡ ಮಾತನಾಡಿ ಧನ್ಯವಾದಗಳು
+
 import asyncio
 from pyrogram import Client
 from pyrogram.types import Message
