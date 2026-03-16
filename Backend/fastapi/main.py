@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse, HTMLResponse
 import urllib.parse
 
 from fastapi.templating import Jinja2Templates
-
+from pydantic import BaseModel
 
 
 import mimetypes
@@ -38,7 +38,39 @@ app.add_middleware(
 )
 
 
+# ===============================
+# ADMIN MOVIE ADD API
+# ===============================
 
+
+
+class Movie(BaseModel):
+    title: str
+    tmdb_id: int
+    year: int
+    language: str
+    quality: str
+    telegram_link: str
+
+
+@app.post("/admin/add-movie")
+async def add_movie(movie: Movie):
+
+    data = {
+        "title": movie.title,
+        "tmdb_id": movie.tmdb_id,
+        "year": movie.year,
+        "language": movie.language,
+        "quality": movie.quality,
+        "telegram_link": movie.telegram_link
+    }
+
+    await db.movies.insert_one(data)
+
+    return {
+        "status": "success",
+        "message": "🎬 Movie added successfully"
+    }
 
 @app.get("/", response_model=Dict[str, Any])
 async def get_bot_workloads():
