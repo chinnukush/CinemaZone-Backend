@@ -172,79 +172,110 @@ class Database:
             return existing_media["_id"]
 
     async def insert_media(
-        self,
-        metadata_info: dict,
-        hash: str,
-        channel: int,
-        msg_id: int,
-        size: str,
-        name: str
-    ) -> Optional[ObjectId]:
-        data = {"chat_id": channel, "msg_id": msg_id, "hash": hash}
-        encoded_string = await encode_string(data)
+    self,
+    metadata_info: dict,
+    hash: str,
+    channel: int,
+    msg_id: int,
+    size: str,
+    name: str
+) -> Optional[ObjectId]:
 
-        if metadata_info['media_type'] == "movie":
-            media = MovieSchema(
-                tmdb_id=metadata_info['tmdb_id'],
-                title=metadata_info['title'],
-                genres=metadata_info['genres'],
-                description=metadata_info['description'],
-                rating=metadata_info['rate'],
-                release_year=metadata_info['year'],
-                poster=metadata_info['poster'],
-                backdrop=metadata_info['backdrop'],
-                runtime=metadata_info['runtime'],
-                media_type=metadata_info['media_type'],
-                languages=metadata_info['languages'],
-                rip=metadata_info['rip'],
-                telegram=[
-                    QualityDetail(
-                        quality=metadata_info['quality'],
-                        id=encoded_string,
-                        name=name,
-                        size=size
-                    )]
-            )
-            return await self.update_movie(media)
+    data = {"chat_id": channel, "msg_id": msg_id, "hash": hash}
+    encoded_string = await encode_string(data)
+
+    # -------- FIX QUALITY DETECTION --------
+    quality = metadata_info.get("quality")
+
+    if not quality:
+        filename = name.lower()
+
+        if "2160" in filename or "4k" in filename:
+            quality = "4K"
+        elif "1080" in filename:
+            quality = "1080p"
+        elif "720" in filename:
+            quality = "720p"
+        elif "480" in filename:
+            quality = "480p"
         else:
-            tv_show = TVShowSchema(
-                tmdb_id=metadata_info['tmdb_id'],
-                title=metadata_info['title'],
-                genres=metadata_info['genres'],
-                description=metadata_info['description'],
-                rating=metadata_info['rate'],
-                release_year=metadata_info['year'],
-                poster=metadata_info['poster'],
-                backdrop=metadata_info['backdrop'],
-                media_type=metadata_info['media_type'],
-                status=metadata_info['status'],
-                total_seasons=metadata_info['total_seasons'],
-                total_episodes=metadata_info['total_episodes'],
-                languages=metadata_info['languages'],
-                rip=metadata_info['rip'],
-                seasons=[
-                    Season(
-                        season_number=metadata_info['season_number'],
-                        episodes=[
-                            Episode(
-                                episode_number=metadata_info['episode_number'],
-                                title=metadata_info['episode_title'],
-                                episode_backdrop=metadata_info['episode_backdrop'],
-                                telegram=[
-                                    QualityDetail(
-                                        quality=metadata_info['quality'],
-                                        id=encoded_string,
-                                        name=name,
-                                        size=size
-                                    )
-                                ]
-                            )
-                        ]
-                    )
-                ]
-            )
-            return await self.update_tv_show(tv_show)
+            quality = "Unknown"
 
+    metadata_info["quality"] = quality
+    # --------------------------------------
+
+    if metadata_info['media_type'] == "movie":
+
+        media = MovieSchema(
+            tmdb_id=metadata_info['tmdb_id'],
+            title=metadata_info['title'],
+            genres=metadata_info['genres'],
+            description=metadata_info['description'],
+            rating=metadata_info['rate'],
+            release_year=metadata_info['year'],
+            poster=metadata_info['poster'],
+            backdrop=metadata_info['backdrop'],
+            runtime=metadata_info['runtime'],
+            media_type=metadata_info['media_type'],
+            languages=metadata_info['languages'],
+            rip=metadata_info['rip'],
+
+            telegram=[
+                QualityDetail(
+                    quality=metadata_info['quality'],
+                    id=encoded_string,
+                    name=name,
+                    size=size
+                )
+            ]
+        )
+
+        return await self.update_movie(media)
+
+    else:
+
+        tv_show = TVShowSchema(
+            tmdb_id=metadata_info['tmdb_id'],
+            title=metadata_info['title'],
+            genres=metadata_info['genres'],
+            description=metadata_info['description'],
+            rating=metadata_info['rate'],
+            release_year=metadata_info['year'],
+            poster=metadata_info['poster'],
+            backdrop=metadata_info['backdrop'],
+            media_type=metadata_info['media_type'],
+            status=metadata_info['status'],
+            total_seasons=metadata_info['total_seasons'],
+            total_episodes=metadata_info['total_episodes'],
+            languages=metadata_info['languages'],
+            rip=metadata_info['rip'],
+
+            seasons=[
+                Season(
+                    season_number=metadata_info['season_number'],
+
+                    episodes=[
+                        Episode(
+                            episode_number=metadata_info['episode_number'],
+                            title=metadata_info['episode_title'],
+                            episode_backdrop=metadata_info['episode_backdrop'],
+
+                            telegram=[
+                                QualityDetail(
+                                    quality=metadata_info['quality'],
+                                    id=encoded_string,
+                                    name=name,
+                                    size=size
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+
+        return await self.update_tv_show(tv_show)
+    
     async def sort_tv_shows(
         self, 
         sort_params: List[Tuple[str, str]], 
