@@ -1,7 +1,7 @@
 API_ID = "15671595"
 API_HASH = "bb8f36f9c39a24c7f8b2acbc7ea8c60a"
 BOT_TOKEN = "8675260165:AAEMVvG8I84NwZIpqWN3BUKrG3hCFBVZfYc"
-AUTH_CHANNEL = "-1002515386092"
+AUTH_CHANNEL = "-1003224239956"
 DATABASE = "mongodb+srv://anikush8310_db_user:PeSd8Ai4sHuNGBgJ@cluster0.odxi5kc.mongodb.net/?appName=Cluster0"
 TMDB_API = "6abcb6bb99fb77f33c37016a28866ed2"
 IMDB_API = "https://imdb-api.pandapelisv.workers.dev"
