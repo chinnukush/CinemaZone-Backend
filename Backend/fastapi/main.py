@@ -42,35 +42,41 @@ app.add_middleware(
 # ADMIN MOVIE ADD API
 # ===============================
 
-
-
 class Movie(BaseModel):
-    title: str
     tmdb_id: int
-    year: int
-    language: str
-    quality: str
-    telegram_link: str
+    title: str
+    overview: Optional[str] = None
+    poster: Optional[str] = None
+    backdrop: Optional[str] = None
+    release_year: Optional[int] = None
+    rating: Optional[float] = 0
+    genres: Optional[List[str]] = []
+    media_type: str = "movie"
 
 
 @app.post("/admin/add-movie")
 async def add_movie(movie: Movie):
 
     data = {
-        "title": movie.title,
         "tmdb_id": movie.tmdb_id,
-        "year": movie.year,
-        "language": movie.language,
-        "quality": movie.quality,
-        "telegram_link": movie.telegram_link
+        "title": movie.title,
+        "overview": movie.overview,
+        "poster": movie.poster,
+        "backdrop": movie.backdrop,
+        "release_year": movie.release_year,
+        "rating": movie.rating,
+        "genres": movie.genres,
+        "media_type": movie.media_type,
+        "updated_on": int(time())
     }
 
-    await db.movies.insert_one(data)
+    await db.media.insert_one(data)
 
     return {
         "status": "success",
         "message": "🎬 Movie added successfully"
     }
+
 
 @app.get("/", response_model=Dict[str, Any])
 async def get_bot_workloads():
