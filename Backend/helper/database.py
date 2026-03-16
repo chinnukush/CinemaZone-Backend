@@ -199,7 +199,7 @@ class Database:
                 rip=metadata_info['rip'],
                 telegram=[
                     QualityDetail(
-                        quality=metadata_info("quality" "HDRip"),
+                        quality=metadata_info.get("quality") or "HDRip",
                         id=encoded_string,
                         name=name,
                         size=size
