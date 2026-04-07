@@ -55,7 +55,7 @@ async def start(bot: Client, message: Message):
 
     # --- Case 1: Plain /start ---
     if not command_part.startswith("file_"):
-        await message.reply_text("ʜɪɪ 👋 ɪ ᴀᴍ ʜᴇʀᴇ ᴛᴏ ᴘʀᴏᴠɪᴅᴇ ᴅɪʀᴇᴄᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋꜱ ғᴏʀ ᴍᴏᴠɪᴇꜱ & ꜱᴇʀɪᴇꜱ ғʀᴏᴍ https://cinemazone-g5rb.vercel.app 📥.")
+        await message.reply_text("ʜɪɪ 👋 ɪ ᴀᴍ ʜᴇʀᴇ ᴛᴏ ᴘʀᴏᴠɪᴅᴇ ᴅɪʀᴇᴄᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋꜱ ғᴏʀ ᴍᴏᴠɪᴇꜱ & ꜱᴇʀɪᴇꜱ 📥.")
         return
 
     # --- Case 2: Deep-link /start file_xxx ---
